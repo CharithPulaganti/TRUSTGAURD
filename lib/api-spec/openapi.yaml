@@ -1,0 +1,458 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Privacy-first analysis of potentially suspicious digital communications
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: analysis
+    description: Local threat analysis
+  - name: history
+    description: Anonymous, metadata-only analysis history
+  - name: reports
+    description: Privacy-safe printable reports
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /health:
+    get:
+      operationId: getHealth
+      tags: [health]
+      summary: Application health
+      responses:
+        "200":
+          description: Application health status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /version:
+    get:
+      operationId: getVersion
+      tags: [health]
+      summary: Application version and optional provider status
+      responses:
+        "200":
+          description: Version information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionInfo"
+  /analyze/text:
+    post:
+      operationId: analyzeText
+      tags: [analysis]
+      summary: Analyze a message with local rules and context
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TextAnalysisInput"
+      responses:
+        "200":
+          description: Explainable risk assessment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResult"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /digital-arrest/analyze:
+    post:
+      operationId: analyzeDigitalArrest
+      tags: [analysis]
+      summary: Analyze a message for coercive authority impersonation patterns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TextAnalysisInput"
+      responses:
+        "200":
+          description: Digital-arrest pattern assessment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResult"
+  /analyze/url:
+    post:
+      operationId: analyzeUrl
+      tags: [analysis]
+      summary: Safely inspect URL structure without visiting the destination
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UrlAnalysisInput"
+      responses:
+        "200":
+          description: URL structure assessment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResult"
+        "400":
+          description: Invalid or unsafe URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /analyze/image:
+    post:
+      operationId: analyzeImage
+      tags: [analysis]
+      summary: Extract text from a screenshot and analyze it
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UploadInput"
+      responses:
+        "200":
+          description: Screenshot assessment with extracted text when available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResult"
+        "400":
+          description: Invalid image or unreadable text
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /analyze/qr:
+    post:
+      operationId: analyzeQr
+      tags: [analysis]
+      summary: Decode a QR code without visiting its destination
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UploadInput"
+      responses:
+        "200":
+          description: QR code assessment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResult"
+        "400":
+          description: Invalid image or no QR code found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /analyze/document:
+    post:
+      operationId: analyzeDocument
+      tags: [analysis]
+      summary: Extract document text and analyze suspicious indicators
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UploadInput"
+      responses:
+        "200":
+          description: Document assessment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResult"
+        "400":
+          description: Invalid or unsupported document
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /analyze/audio:
+    post:
+      operationId: analyzeAudio
+      tags: [analysis]
+      summary: Transcribe audio when an opted-in transcription provider is available
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+                $ref: "#/components/schemas/AudioUploadInput"
+      responses:
+        "200":
+          description: Transcript-based assessment or explicit provider-unavailable status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResult"
+        "400":
+          description: Invalid or unsupported audio
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Transcription provider is not configured or temporarily unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /analysis:
+    get:
+      operationId: readAnalysis
+      tags: [analysis]
+      summary: Retrieve privacy-safe analysis history metadata
+      parameters:
+        - name: analysis_id
+          in: query
+          required: true
+          schema: { type: string, format: uuid }
+        - name: session_id
+          in: query
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Analysis metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisHistoryItem"
+        "404":
+          description: Analysis not found for this anonymous session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /history:
+    get:
+      operationId: listHistory
+      tags: [history]
+      summary: List metadata-only history for an anonymous session
+      parameters:
+        - name: session_id
+          in: query
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Recent analysis metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HistoryResponse"
+    delete:
+      operationId: clearHistory
+      tags: [history]
+      summary: Delete all history metadata for an anonymous session
+      parameters:
+        - name: session_id
+          in: query
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Number of deleted history entries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HistoryClearResult"
+  /report:
+    post:
+      operationId: createReport
+      tags: [reports]
+      summary: Create a printable report without raw input by default
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReportOptions"
+      responses:
+        "200":
+          description: Printable HTML report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportDocument"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    VersionInfo:
+      type: object
+      properties:
+        version: { type: string }
+        analysis_engine: { type: string }
+        external_reputation_available: { type: boolean }
+        llm_available: { type: boolean }
+        audio_transcription_available: { type: boolean }
+      required: [version, analysis_engine, external_reputation_available, llm_available, audio_transcription_available]
+    TextAnalysisInput:
+      type: object
+      properties:
+        session_id: { type: string, format: uuid }
+        text: { type: string, minLength: 1, maxLength: 50000 }
+      required: [session_id, text]
+    UrlAnalysisInput:
+      type: object
+      properties:
+        session_id: { type: string, format: uuid }
+        url: { type: string, minLength: 1, maxLength: 2048 }
+        allow_external_reputation: { type: boolean, default: false }
+      required: [session_id, url]
+    UploadInput:
+      type: object
+      properties:
+        session_id: { type: string, format: uuid }
+        allow_external_reputation: { type: boolean, default: false }
+        file:
+          type: string
+          format: binary
+      required: [session_id, file]
+    AudioUploadInput:
+      type: object
+      properties:
+        session_id: { type: string, format: uuid }
+        file:
+          type: string
+          format: binary
+        allow_external_transcription:
+          type: boolean
+          const: true
+      required: [session_id, file, allow_external_transcription]
+    Indicator:
+      type: object
+      properties:
+        id: { type: string }
+        label: { type: string }
+        description: { type: string }
+        weight: { type: integer }
+        severity: { type: string, enum: [low, medium, high] }
+      required: [id, label, description, weight, severity]
+    EvidenceItem:
+      type: object
+      properties:
+        text: { type: string }
+        indicator_id: { type: string }
+        indicator_label: { type: string }
+      required: [text, indicator_id, indicator_label]
+    ExternalIntelligence:
+      type: object
+      properties:
+        provider_available: { type: boolean }
+        status: { type: string, enum: [not_requested, unavailable, checked_clean, threat_detected, lookup_failed] }
+        message: { type: string }
+      required: [provider_available, status, message]
+    TechnicalAnalysis:
+      type: object
+      properties:
+        engine: { type: string }
+        semantic_analysis: { type: string }
+        extracted_text_available: { type: boolean }
+        external_reputation: { type: string }
+        audio_transcription: { type: string }
+      required: [engine, semantic_analysis, extracted_text_available, external_reputation, audio_transcription]
+    AnalysisResult:
+      type: object
+      properties:
+        analysis_id: { type: string, format: uuid }
+        input_type: { type: string, enum: [text, url, image, qr, document, audio, digital_arrest] }
+        risk_score: { type: integer, minimum: 0, maximum: 100 }
+        risk_level: { type: string, enum: [LOW, CAUTION, HIGH, CRITICAL, UNKNOWN] }
+        category: { type: string }
+        evidence_quality: { type: string, enum: [LIMITED, MODERATE, STRONG] }
+        indicators:
+          type: array
+          items: { $ref: "#/components/schemas/Indicator" }
+        evidence:
+          type: array
+          items: { $ref: "#/components/schemas/EvidenceItem" }
+        attack_chain:
+          type: array
+          items: { type: string }
+        explanation: { type: string }
+        recommendations:
+          type: array
+          items: { type: string }
+        external_intelligence: { $ref: "#/components/schemas/ExternalIntelligence" }
+        technical_analysis: { $ref: "#/components/schemas/TechnicalAnalysis" }
+        extracted_text:
+          type: ["string", "null"]
+        disclaimer: { type: string }
+      required: [analysis_id, input_type, risk_score, risk_level, category, evidence_quality, indicators, evidence, attack_chain, explanation, recommendations, external_intelligence, technical_analysis, extracted_text, disclaimer]
+    AnalysisHistoryItem:
+      type: object
+      properties:
+        analysis_id: { type: string, format: uuid }
+        created_at: { type: string, format: date-time }
+        input_type: { type: string }
+        risk_score: { type: integer }
+        risk_level: { type: string }
+        category: { type: string }
+        summary: { type: string }
+      required: [analysis_id, created_at, input_type, risk_score, risk_level, category, summary]
+    HistoryResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/AnalysisHistoryItem" }
+      required: [items]
+    HistoryClearResult:
+      type: object
+      properties:
+        deleted: { type: integer }
+      required: [deleted]
+    ReportOptions:
+      type: object
+      properties:
+        analysis_id: { type: string, format: uuid }
+        session_id: { type: string, format: uuid }
+        include_evidence: { type: boolean, default: false }
+        analysis:
+          $ref: "#/components/schemas/AnalysisResult"
+      required: [analysis_id, session_id, analysis]
+    ReportDocument:
+      type: object
+      properties:
+        html: { type: string }
+        filename: { type: string }
+      required: [html, filename]
+    ApiError:
+      type: object
+      properties:
+        error: { type: string }
+        code: { type: string }
+      required: [error, code]
+

@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "TrustGuard AI"
+description = "A privacy-first digital safety web app for analyzing suspicious messages, links, documents, QR codes, audio, and coercive authority impersonation patterns with explainable local risk assessments and safety guidance."
+version = "1.0.0"
+id = "artifacts/trustguard-ai"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25536
+
+[services.development]
+run = "pnpm --filter @workspace/trustguard-ai run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/trustguard-ai", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/trustguard-ai/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25536"
+BASE_PATH = "/"
