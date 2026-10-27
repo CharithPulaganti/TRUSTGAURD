@@ -858,11 +858,25 @@ If you intend to publish the project for public reuse, choose an appropriate lic
 
 ---
 
-## 👨‍💻 Author and Repository
+## 👨‍💻 Author, Repository & Support
 
-**Project:** TRUSTGUARD AI  
-**GitHub:** [CharithPulaganti/TRUSTGAURD](https://github.com/CharithPulaganti/TRUSTGAURD)
+**Project:** TRUSTGUARD AI — AI-Powered Digital Safety Platform
 
-Built to help users identify potential digital threats and make more informed online decisions.
+**Developer:** Charith Pulaganti
+
+- **GitHub Repository:** [CharithPulaganti/TRUSTGAURD](https://github.com/CharithPulaganti/TRUSTGAURD)
+- **GitHub Profile:** [Charith Pulaganti](https://github.com/CharithPulaganti)
+- **LinkedIn:** [Charith Pulaganti](https://www.linkedin.com/in/charith-pulaganti/)
+- **Technical Support & Bug Reports:** [charithpulaganti9701@gmail.com](mailto:charithpulaganti9701@gmail.com?subject=TRUSTGUARD%20AI%20Support)
+
+TRUSTGUARD AI is developed to help users identify potential digital threats, assess suspicious links and messages, and make more informed online decisions through explainable risk assessments and practical safety guidance.
+
+### Support and Issue Reporting
+
+For technical issues, bugs, functionality problems, or professional enquiries, contact the developer using the email above. When reporting a bug, include a short description, reproduction steps, and any relevant error messages. Do not share passwords, API keys, or sensitive personal information.
+
+### Disclaimer
+
+TRUSTGUARD AI provides risk indicators to support safer online decisions. An assessment cannot guarantee that content is safe or malicious. Always verify sensitive requests independently.
 
 **Stay alert. Verify before you trust.**

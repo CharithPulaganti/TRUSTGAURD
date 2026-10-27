@@ -320,6 +320,40 @@ export function AboutPage() {
   return <><PageHeading eyebrow="ABOUT TRUSTGUARD" title="Technology should lower the temperature." description="TrustGuard AI is an everyday-person digital safety companion for the moments when something feels off." />
     <Surface className="about-statement"><span className="about-quote-mark">“</span><h2>Not more alarm.<br /><em>More understanding.</em></h2><p>Our purpose is simple: turn alarming messages, links, and files into grounded, explainable signals and calm next steps—without pretending to be certain.</p></Surface>
     <div className="principles-grid"><Surface><span className="principle-icon"><Info size={18} /></span><h3>Explain the why</h3><p>Show the indicators and evidence behind a result instead of asking people to trust a mysterious score.</p></Surface><Surface><span className="principle-icon"><ShieldCheck size={18} /></span><h3>Respect uncertainty</h3><p>A tool can help identify patterns. It cannot establish intent, verify a person’s identity, or guarantee safety.</p></Surface><Surface><span className="principle-icon"><HeartPulseIcon /></span><h3>Keep people steady</h3><p>Practical recommendations should help people pause and verify, not push them into panic.</p></Surface></div>
+
+    <Surface className="developer-card">
+      <span className="principle-icon">
+        <ShieldCheck size={18} />
+      </span>
+      <h2>Developer &amp; Support</h2>
+      <p>
+        TRUSTGUARD AI is developed by <strong>Charith Pulaganti</strong>,
+        with a focus on practical digital safety and explainable threat analysis.
+      </p>
+      <div className="developer-links">
+        <a
+          href="https://github.com/CharithPulaganti"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>
+        <a
+          href="https://www.linkedin.com/in/charith-pulaganti/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          LinkedIn
+        </a>
+        <a href="mailto:charithpulaganti9701@gmail.com?subject=TRUSTGUARD%20AI%20Support">
+          Email support
+        </a>
+      </div>
+      <p className="developer-support-note">
+        For bug reports, technical issues, and professional enquiries, contact the developer by email.
+      </p>
+    </Surface>
+
     <div className="about-end"><Link href="/how-it-works" className="text-link">How analysis works <ArrowRight size={15} /></Link><Link href="/privacy" className="text-link">Our privacy approach <ArrowRight size={15} /></Link></div>
   </>;
 }

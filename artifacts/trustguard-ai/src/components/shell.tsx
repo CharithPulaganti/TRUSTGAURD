@@ -51,7 +51,43 @@ export function Shell({ children }: { children: ReactNode }) {
         <div className="topbar-right"><span className="secure-session"><i /><span>Private session</span></span><Link href="/settings" className="top-avatar" aria-label="Settings">TG</Link></div>
       </header>
       <main className="main-content">{children}</main>
-      <footer className="site-footer"><span>TrustGuard AI <span className="foot-divider">·</span> Clear signals, calmer decisions.</span><div><Link href="/privacy">Privacy</Link><Link href="/how-it-works">How it works</Link><Link href="/about">About</Link><Link href="/settings">Settings</Link></div></footer>
+
+<footer className="site-footer">
+  <div className="footer-brand">
+    <span>
+      TrustGuard AI <span className="foot-divider">·</span> Clear signals, calmer decisions.
+    </span>
+    <small>
+      Developed by{" "}
+      <a
+        href="https://github.com/CharithPulaganti"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Charith Pulaganti
+      </a>
+      {" · "}
+      <a href="mailto:charithpulaganti9701@gmail.com?subject=TRUSTGUARD%20AI%20Support">
+        Technical support &amp; bug reports
+      </a>
+    </small>
+  </div>
+
+  <div className="footer-links">
+    <Link href="/privacy">Privacy</Link>
+    <Link href="/how-it-works">How it works</Link>
+    <Link href="/about">About</Link>
+    <Link href="/settings">Settings</Link>
+    <a
+      href="https://www.linkedin.com/in/charith-pulaganti/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      LinkedIn
+    </a>
+  </div>
+</footer>
+
     </div>
   </div>;
 }
